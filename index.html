@@ -76,8 +76,14 @@
         </div>
       </div>
       <div class="chat" style="margin-top:18px">
-        <div class="chatRow"><div class="bubble ai" id="aiMsg">I’m your temple guide. Ask me about the architecture, significance, route, rituals or anything you see.</div></div>
-        <div class="chatInput"><input id="q" placeholder="What am I looking at?" onkeydown="if(event.key==='Enter') askAbout(this.value)"/><button class="btn primary" onclick="askAbout(document.getElementById('q').value)">Ask</button></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <button class="chip" onclick="askAbout('Tell me the history of this temple')">History</button>
+          <button class="chip" onclick="askAbout('What is this temple famous for?')">Famous for</button>
+          <button class="chip" onclick="askAbout('What seva and puja are available?')">Seva / Puja</button>
+          <button class="chip" onclick="askAbout('What are the temple timings?')">Timings</button>
+        </div>
+        <div class="chatRow"><div class="bubble ai" id="aiMsg">Ask me about this temple’s history, what it is famous for, seva/puja, timings, festivals or architecture.</div></div>
+        <div class="chatInput"><input id="q" placeholder="Ask about this temple..." onkeydown="if(event.key==='Enter') askAbout(this.value)"/><button class="btn primary" onclick="askAbout(document.getElementById('q').value)">Ask</button></div>
       </div>
     </section>
   </main>
@@ -88,6 +94,26 @@ const temples=[
  {name:'Ekambareswarar Temple',deity:'Shiva',why:'One of Kanchipuram’s principal Shiva temples and a Pancha Bhoota Sthalam associated with Earth.',walk:'Moderate',guide:'You are at Ekambareswarar, a major Shiva temple and an important architectural stop in Kanchipuram.'},
  {name:'Kamakshi Amman Temple',deity:'Devi',why:'A major Shakti shrine in Kanchipuram and a natural final stop for a balanced pilgrimage.',walk:'Easy',guide:'You are at Kamakshi Amman Temple, a major Devi shrine and a strong final stop.'}
 ];
+const templeInfo={
+  0:{
+    history:'Varadaraja Perumal Temple, also known as Devaraja Swamy Temple, is one of the 108 Divya Desams. The complex developed over centuries, with major contributions from Chola and Vijayanagara rulers.',
+    famous:'It is famous for its large temple complex, ornate gopurams, the 100-pillared hall, Vaikasi Brahmotsavam and the Athi Varadar tradition.',
+    seva:'Common worship and service offerings include darshan and temple pujas; specific paid sevas and their availability can vary by day. Check with the temple before planning a particular seva.',
+    timings:'The Kancheepuram district government tourism page currently lists morning 6:00 AM–12:30 PM and evening 3:30 PM–8:30 PM; another official tourism listing gives slightly different hours, so visitors should confirm on the day.'
+  },
+  1:{
+    history:'Ekambareswarar is one of the Pancha Bhoota Sthalams of Shiva and represents Earth (Prithvi). The complex was expanded by Pallava, Chola and Vijayanagara rulers and contains extensive inscriptions and monumental halls.',
+    famous:'It is especially famous for the sacred mango tree, the massive Rajagopuram, the thousand-pillared hall and the 1,008 Shiva lingams.',
+    seva:'Daily worship includes multiple puja periods and abhishekam. Specific sevas, tickets and timings can change, so the temple should be contacted for current booking details.',
+    timings:'The Kancheepuram district government currently lists 6:00 AM–12:30 PM and 4:00 PM–8:30 PM.'
+  },
+  2:{
+    history:'Kamakshi Amman Temple is a major Shakti shrine in Kanchipuram. The presiding deity Kamakshi is revered as a form of Goddess Parvati and the temple is central to the city’s Shakti tradition.',
+    famous:'It is famous for Goddess Kamakshi, its Dravidian architecture, major festivals and the temple’s elaborate daily worship tradition.',
+    seva:'The temple’s official website lists daily Goh Puja and Viswarupa Darshan, Kala Sandhi, Utchikalam, Sayarksha and night worship including Palliarai Puja. A Golden Chariot is also conducted on specified days.',
+    timings:'The temple’s official website lists opening from 5:30 AM and daily worship through the evening; the listed night puja runs until about 8:15 PM, followed by Palliarai Puja.'
+  }
+};
 const tourUrls=[
  'https://stat.dinamalar.com/360view/vardarajan_kanchi/tamil/rajagopuram_tam.html',
  'https://stat.dinamalar.com/360view/ekambareshwara/ekambareshwara_tamil/A_tam.html',
@@ -162,12 +188,14 @@ function nextStop(){
 }
 
 function askAbout(q){
- const t=temples[current],text=(q||'').toLowerCase();
- let answer='This area is part of '+t.name+'. ';
- if(text.includes('gopuram')) answer+='The gopuram is one of the visual landmarks and a useful orientation point.';
- else if(text.includes('100')||text.includes('pillar')) answer+='The 100-pillar hall is a key architectural highlight.';
- else if(text.includes('history')) answer+='I can explain the historical significance and major architectural features of this temple.';
- else answer+='I can explain the history, architecture, religious significance, or help you decide the next stop.';
+ const text=(q||'').toLowerCase().trim(), info=templeInfo[current];
+ let answer='';
+ if(text.includes('history')||text.includes('when')||text.includes('old')) answer=info.history;
+ else if(text.includes('famous')||text.includes('known')||text.includes('special')) answer=info.famous;
+ else if(text.includes('seva')||text.includes('puja')||text.includes('pooja')||text.includes('abhishe')) answer=info.seva;
+ else if(text.includes('timing')||text.includes('open')||text.includes('close')||text.includes('time')) answer=info.timings;
+ else if(text.includes('gopuram')||text.includes('pillar')||text.includes('architecture')) answer=temples[current].guide+' '+info.famous;
+ else answer='I can tell you about '+temples[current].name+' — ask me about its history, what it is famous for, seva/puja, timings, festivals or architecture.';
  document.getElementById('aiMsg').textContent=answer;
 }
 </script>
