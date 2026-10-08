@@ -11,47 +11,67 @@ User intent → temple matching → personalized route → virtual experience �
 - Intent-based temple recommendations with explainable matching
 - Knowledge for Varadaraja, Ekambareswarar, Kamakshi, Kumarakottam and Kailasanathar
 - Personalized route cards and next-stop navigation
-- Native virtual temple scene with interactive hotspots
-- Local open-source AI guide using Ollama + Qwen3
-- Multilingual responses through the selected language
-- Structured temple-knowledge fallback when the local model is unavailable
-- No OpenAI dependency and no paid API key
+- Native virtual temple experience
+- Multilingual AI guide
+- Cloudflare Pages Function + Workers AI
+- Open-source Qwen model; no OpenAI/Gemini/OpenRouter API key
+- Structured temple-knowledge fallback
 
-## Run the AI guide locally
+## Free live deployment: Cloudflare Pages + Workers AI
 
-Install Ollama, then pull the model:
+The recommended live deployment is Cloudflare Pages with a Workers AI binding.
+
+### 1. Push this repository to GitHub
+
+This repository already contains the Pages Function at `functions/api/chat.js`.
+
+### 2. Create a Cloudflare Pages project
+
+In Cloudflare Dashboard:
+
+1. Go to **Workers & Pages**.
+2. Create a Pages project and connect this GitHub repository.
+3. Build command: leave empty.
+4. Build output directory: `.`.
+5. Deploy.
+
+### 3. Enable Workers AI
+
+In the Cloudflare Pages project settings, add a **Workers AI** binding:
+
+- Variable name: `AI`
+- Binding: Workers AI
+
+The function reads the binding as `context.env.AI`.
+
+No API key is added to the frontend.
+
+### 4. Model
+
+Yatra uses:
+
+`@cf/qwen/qwen3-30b-a3b-fp8`
+
+You can change it with the `AI_MODEL` environment variable if you prefer another model supported by Workers AI.
+
+### 5. Local development
+
+Install dependencies:
 
 ```bash
-ollama pull qwen3:8b
-ollama run qwen3:8b
+npm install
+npm run dev
 ```
 
-Ollama normally exposes its local API at:
+This runs the Pages site and its Functions through Wrangler.
 
-```
-http://127.0.0.1:11434
-```
+## Important
 
-The Yatra backend calls Ollama directly. No API key is required.
-
-Optional environment variables:
-
-```bash
-OLLAMA_URL=http://127.0.0.1:11434
-OLLAMA_MODEL=qwen3:8b
-```
-
-## Important deployment note
-
-GitHub Pages is static and cannot run Ollama. A public deployment needs a server where Ollama and Qwen3 are running. For a local demo, run Ollama on the same machine as the browser/backend.
-
-If the model is unavailable, Yatra still returns relevant information from `data/temples.json`.
+Workers AI has a free daily allocation, not unlimited inference. Cloudflare's current free allocation is 10,000 neurons/day. Usage above the free allocation may require a paid Workers AI setup.
 
 ## GitHub Pages
 
-The static experience can be published with `.github/workflows/deploy-pages.yml`.
-
-Expected static URL: https://nagasai17bce-rgb.github.io/3D-temple-tour-/
+The static experience can still be published with the existing GitHub Pages workflow, but the AI chat requires Cloudflare Pages/Workers AI because GitHub Pages cannot execute server-side AI inference.
 
 ## Content
 
