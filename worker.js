@@ -1,21 +1,16 @@
-import { getAssetFromKV } from "@cloudflare/kv-asset-handler";
-
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     const url = new URL(request.url);
 
     if (url.pathname === "/api/chat" && request.method === "POST") {
-      return handleChat(request, env);
+      return handleChat(request, env, url);
     }
 
-    return getAssetFromKV(
-      { request, waitUntil: ctx.waitUntil.bind(ctx) },
-      { ASSET_NAMESPACE: env.ASSETS }
-    );
+    return env.ASSETS.fetch(request);
   }
 };
 
-async function handleChat(request, env) {
+async function handleChat(request, env, url) {
   try {
     const body = await request.json();
     const { question, temple, language = "English" } = body || {};
@@ -24,7 +19,7 @@ async function handleChat(request, env) {
       return json({ error: "question and temple are required" }, 400);
     }
 
-    const knowledge = await loadKnowledge(env);
+    const knowledge = await loadKnowledge(env, url);
     const result = retrieve(knowledge, temple.name, question);
     const system = systemPrompt(language, result.temple, result.context);
 
@@ -56,9 +51,17 @@ async function handleChat(request, env) {
   }
 }
 
-async function loadKnowledge(env) {
+async function loadKnowledge(env, url) {
   if (env.KNOWLEDGE_JSON) return JSON.parse(env.KNOWLEDGE_JSON);
-  const response = await fetch(new URL("/data/temples.json", "https://yatra.local"));
+
+  const response = await env.ASSETS.fetch(
+    new Request(new URL("/data/temples.json", url))
+  );
+
+  if (!response.ok) {
+    throw new Error(`Knowledge file unavailable: ${response.status}`);
+  }
+
   return response.json();
 }
 
@@ -72,6 +75,7 @@ function retrieve(knowledge, name, q) {
     { text: t.guidance, score: 2 },
     { text: `Deity: ${t.deity}`, score: /deity|god|goddess|who/.test(x) ? 3 : 1 }
   ];
+
   return {
     temple: t,
     context: chunks.sort((a, b) => b.score - a.score).map(x => x.text).join("\n")
