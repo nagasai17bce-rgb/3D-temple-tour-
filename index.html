@@ -65,15 +65,14 @@
         <div><div class="eyebrow">Virtual experience</div><h2 id="tourTitle">Sri Varadaraja Perumal Temple</h2><p id="tourSub" class="muted">Explore the temple virtually, then ask the AI guide about what you are seeing.</p></div>
         <button class="btn primary" onclick="nextStop()">Next stop →</button>
       </div>
-      <div class="tour" id="tour">
-        <div class="hotspot h1" title="100-pillar hall" onclick="askAbout('the 100-pillar hall')"></div>
-        <div class="hotspot h2" title="gopuram" onclick="askAbout('the gopuram')"></div>
-        <div class="hotspot h3" title="temple tank" onclick="askAbout('the temple tank')"></div>
-        <div class="tourCopy">
-          <div class="tag">LIVE VIRTUAL MODE</div>
-          <h2 id="sceneTitle">Enter the temple</h2>
-          <p id="sceneDesc">Choose a hotspot, ask a question, or move to the next stop. In production, this surface connects to an authorized 360° asset for this temple.</p>
-          <button class="btn ghost" onclick="askAbout('what I am looking at right now')">Ask the AI guide</button>
+      <div class="tour" id="tour" style="min-height:560px;display:block;background:#08090b">
+        <iframe id="tourFrame" title="360 degree temple virtual tour" src="https://stat.dinamalar.com/360view/vardarajan_kanchi/tamil/rajagopuram_tam.html" style="width:100%;height:560px;border:0;display:block;background:#050506" allow="fullscreen; gyroscope; accelerometer; autoplay; xr-spatial-tracking"></iframe>
+        <div style="position:absolute;left:18px;top:18px;z-index:3;background:#0b0b0dcc;border:1px solid #39352d;border-radius:12px;padding:10px 13px;backdrop-filter:blur(8px)">
+          <div class="tag">LIVE 360° EXPERIENCE</div>
+          <div id="sceneTitle" style="font-weight:800;margin-top:3px">Varadaraja Perumal · Rajagopuram</div>
+        </div>
+        <div style="position:absolute;right:18px;bottom:18px;z-index:3;background:#0b0b0dcc;border:1px solid #39352d;border-radius:12px;padding:10px 13px;color:#ddd;font-size:12px;max-width:310px">
+          Drag to look around. Use the AI guide below to understand what you are viewing.
         </div>
       </div>
       <div class="chat" style="margin-top:18px">
@@ -99,7 +98,7 @@ function buildPlan(){
   current=0;openTemple(0);window.scrollTo({top:document.getElementById('results').offsetTop-80,behavior:'smooth'});
 }
 function openTemple(i){
-  current=i;const t=temples[i];document.getElementById('tourTitle').textContent=t.name;document.getElementById('sceneTitle').textContent='Explore '+t.name;document.getElementById('sceneDesc').textContent=t.guide;document.getElementById('aiMsg').textContent='I’m guiding you through '+t.name+'. Ask me about what you see.';
+  current=i;const t=temples[i];document.getElementById('tourTitle').textContent=t.name;document.getElementById('sceneTitle').textContent=t.name;document.getElementById('sceneDesc')?.textContent=t.guide;document.getElementById('aiMsg').textContent='I’m guiding you through '+t.name+'. Ask me about what you see.';
 }
 function nextStop(){if(current<temples.length-1){openTemple(current+1)}else{document.getElementById('aiMsg').textContent='Your virtual pilgrimage is complete. You can now use the plan for your physical visit.'}}
 function askAbout(q){const t=temples[current];const text=(q||'').toLowerCase();let answer='This area is part of '+t.name+'. ';if(text.includes('gopuram'))answer+='The gopuram is one of the visual landmarks of the complex and a useful orientation point.';else if(text.includes('100')||text.includes('pillar'))answer+='The 100-pillar hall is a key architectural highlight to explore for its sculptural detailing.';else if(text.includes('tank'))answer+='The temple tank is an important sacred water space connected to the temple complex.';else answer+='I can explain its history, architecture, religious significance or help you decide where to go next.';document.getElementById('aiMsg').textContent=answer}
