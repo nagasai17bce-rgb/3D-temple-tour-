@@ -222,7 +222,7 @@ let lastAnswer="";\nasync function askAbout(q){
  const msg=document.getElementById('aiMsg');
  msg.textContent='Thinking…';
  try{
-   const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question,temple:temples[current]})});
+   const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question,temple:temples[current],language:document.getElementById('language').value})});
    if(!res.ok)throw new Error('api');
    const data=await res.json();
    msg.textContent=data.answer||localAnswer(question);
