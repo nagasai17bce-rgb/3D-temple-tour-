@@ -217,16 +217,24 @@ function nextStop(){
  else document.getElementById('aiMsg').textContent='Your virtual pilgrimage is complete. You can now use this route for your physical visit.';
 }
 
-function askAbout(q){
- const text=(q||'').toLowerCase().trim(), info=templeInfo[current];
- let answer='';
- if(text.includes('history')||text.includes('when')||text.includes('old')) answer=info.history;
- else if(text.includes('famous')||text.includes('known')||text.includes('special')) answer=info.famous;
- else if(text.includes('seva')||text.includes('puja')||text.includes('pooja')||text.includes('abhishe')) answer=info.seva;
- else if(text.includes('timing')||text.includes('open')||text.includes('close')||text.includes('time')) answer=info.timings;
- else if(text.includes('gopuram')||text.includes('pillar')||text.includes('architecture')) answer=temples[current].guide+' '+info.famous;
- else answer='I can tell you about '+temples[current].name+' — ask me about its history, what it is famous for, seva/puja, timings, festivals or architecture.';
- document.getElementById('aiMsg').textContent=answer;
+async function askAbout(q){
+ const question=(q||'').trim(); if(!question)return;
+ const msg=document.getElementById('aiMsg');
+ msg.textContent='Thinking…';
+ try{
+   const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question,temple:temples[current]})});
+   if(!res.ok)throw new Error('api');
+   const data=await res.json();
+   msg.textContent=data.answer||localAnswer(question);
+ }catch(e){ msg.textContent=localAnswer(question); }
+}
+function localAnswer(q){
+ const x=q.toLowerCase(),info=templeInfo[current];
+ if(/history|old|built|when/.test(x))return info.history;
+ if(/famous|known|special/.test(x))return info.famous;
+ if(/seva|puja|pooja|worship|abhishe/.test(x))return info.seva;
+ if(/timing|open|close|time/.test(x))return info.timings;
+ return 'For '+temples[current].name+': '+info.history+' '+info.famous;
 }
 </script>
 </body>
