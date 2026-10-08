@@ -1,6 +1,12 @@
-name = "yatra-ai-pilgrimage"
-compatibility_date = "2026-10-08"
-pages_build_output_dir = "."
-
-[ai]
-binding = "AI"
+{
+  "name": "yatra-ai-pilgrimage",
+  "compatibility_date": "2026-10-08",
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS"
+  },
+  "ai": {
+    "binding": "AI"
+  },
+  "main": "./worker.js"
+}
