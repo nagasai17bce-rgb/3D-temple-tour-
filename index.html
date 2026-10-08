@@ -90,36 +90,66 @@
 </div>
 <script>
 const temples=[
- {name:'Sri Varadaraja Perumal Temple',deity:'Vishnu',why:'Major heritage temple with iconic gopurams, mandapams and sacred spaces.',walk:'Moderate',guide:'You are exploring Varadaraja Perumal Temple. The 100-pillar hall and mandapams are important architectural highlights.'},
- {name:'Ekambareswarar Temple',deity:'Shiva',why:'One of Kanchipuram’s principal Shiva temples and a Pancha Bhoota Sthalam associated with Earth.',walk:'Moderate',guide:'You are at Ekambareswarar, a major Shiva temple and an important architectural stop in Kanchipuram.'},
- {name:'Kamakshi Amman Temple',deity:'Devi',why:'A major Shakti shrine in Kanchipuram and a natural final stop for a balanced pilgrimage.',walk:'Easy',guide:'You are at Kamakshi Amman Temple, a major Devi shrine and a strong final stop.'}
+ {name:'Sri Varadaraja Perumal Temple',deity:'Vishnu',why:'Major Vishnu shrine and one of the 108 Divya Desams.',walk:'Moderate',guide:'Varadaraja Perumal is one of Kanchipuram’s major Vishnu temples.'},
+ {name:'Ekambareswarar Temple',deity:'Shiva',why:'Pancha Bhoota Sthalam representing Earth, with major Shiva worship traditions.',walk:'Moderate',guide:'Ekambareswarar is Kanchipuram’s major Earth-element Shiva shrine.'},
+ {name:'Kamakshi Amman Temple',deity:'Devi',why:'Major Shakti shrine and the principal goddess temple of Kanchipuram.',walk:'Easy',guide:'Kamakshi Amman is a central Shakti shrine in Kanchipuram.'},
+ {name:'Kumarakottam Murugan Temple',deity:'Murugan',why:'Important Murugan shrine located between Ekambareswarar and Kamakshi temples.',walk:'Easy',guide:'Kumarakottam is a major Murugan temple associated with the Kanda Puranam tradition.'},
+ {name:'Kailasanathar Temple',deity:'Shiva',why:'Historic Pallava-era Shiva temple known for its early Dravidian architecture.',walk:'Easy',guide:'Kailasanathar is one of Kanchipuram’s most important early architectural monuments.'}
 ];
 const templeInfo={
-  0:{
-    history:'Varadaraja Perumal Temple, also known as Devaraja Swamy Temple, is one of the 108 Divya Desams. The complex developed over centuries, with major contributions from Chola and Vijayanagara rulers.',
-    famous:'It is famous for its large temple complex, ornate gopurams, the 100-pillared hall, Vaikasi Brahmotsavam and the Athi Varadar tradition.',
-    seva:'Common worship and service offerings include darshan and temple pujas; specific paid sevas and their availability can vary by day. Check with the temple before planning a particular seva.',
-    timings:'The Kancheepuram district government tourism page currently lists morning 6:00 AM–12:30 PM and evening 3:30 PM–8:30 PM; another official tourism listing gives slightly different hours, so visitors should confirm on the day.'
-  },
-  1:{
-    history:'Ekambareswarar is one of the Pancha Bhoota Sthalams of Shiva and represents Earth (Prithvi). The complex was expanded by Pallava, Chola and Vijayanagara rulers and contains extensive inscriptions and monumental halls.',
-    famous:'It is especially famous for the sacred mango tree, the massive Rajagopuram, the thousand-pillared hall and the 1,008 Shiva lingams.',
-    seva:'Daily worship includes multiple puja periods and abhishekam. Specific sevas, tickets and timings can change, so the temple should be contacted for current booking details.',
-    timings:'The Kancheepuram district government currently lists 6:00 AM–12:30 PM and 4:00 PM–8:30 PM.'
-  },
-  2:{
-    history:'Kamakshi Amman Temple is a major Shakti shrine in Kanchipuram. The presiding deity Kamakshi is revered as a form of Goddess Parvati and the temple is central to the city’s Shakti tradition.',
-    famous:'It is famous for Goddess Kamakshi, its Dravidian architecture, major festivals and the temple’s elaborate daily worship tradition.',
-    seva:'The temple’s official website lists daily Goh Puja and Viswarupa Darshan, Kala Sandhi, Utchikalam, Sayarksha and night worship including Palliarai Puja. A Golden Chariot is also conducted on specified days.',
-    timings:'The temple’s official website lists opening from 5:30 AM and daily worship through the evening; the listed night puja runs until about 8:15 PM, followed by Palliarai Puja.'
-  }
+ 0:{history:'Varadaraja Perumal Temple is one of the 108 Divya Desams dedicated to Vishnu. The Kancheepuram district describes its large complex, pillared halls and Vijayanagara contributions.',famous:'It is famous for its 100-pillared hall, architectural carvings, Brahmotsavam and Athi Varadar tradition.',seva:'Daily worship and temple services are offered, with specific seva availability varying by day. Confirm current paid seva details with the temple.',timings:'The Kancheepuram district currently lists 6:00 AM–12:30 PM and 3:30 PM–8:30 PM.'},
+ 1:{history:'Ekambareswarar is one of the five Pancha Bhoota Sthalams of Shiva and represents Earth. Pallava, Chola and Vijayanagara rulers contributed to the complex.',famous:'It is famous for the sacred mango tree, huge Rajagopuram, thousand-pillared hall and 1008 Shiva lingams.',seva:'Multiple daily worship services are performed. Exact seva tickets and availability can vary and should be confirmed with the temple.',timings:'The Kancheepuram district lists 6:00 AM–12:30 PM and 4:00 PM–8:30 PM.'},
+ 2:{history:'Kamakshi Amman is a major Shakti shrine in Kanchipuram and the city’s principal goddess temple.',famous:'It is known for Goddess Kamakshi, the golden vimanam and its important Shakti tradition.',seva:'Daily worship includes several puja periods; exact seva offerings and booking rules should be confirmed with the temple.',timings:'Temple timings can vary by worship schedule; visitors should confirm the current schedule before travelling.'},
+ 3:{history:'Kumarakottam is an important Murugan temple situated between the Ekambareswarar and Kamakshi temples.',famous:'It is associated with Kachiappa Sivachariar and the Kanda Puranam tradition.',seva:'Multiple daily worship services are traditionally offered; confirm current seva availability at the temple.',timings:'Published tourism information lists morning and evening worship windows; confirm the day’s schedule before visiting.'},
+ 4:{history:'Kailasanathar is an early Pallava-era Shiva temple and one of Kanchipuram’s key architectural monuments.',famous:'It is particularly famous for its early Dravidian architecture, sandstone sculptures and Shiva imagery.',seva:'This is primarily a heritage and worship site; confirm current puja and seva arrangements locally.',timings:'Confirm current opening hours locally before visiting.'}
 };
-const tourUrls=[
- 'https://stat.dinamalar.com/360view/vardarajan_kanchi/tamil/rajagopuram_tam.html',
- 'https://stat.dinamalar.com/360view/ekambareshwara/ekambareshwara_tamil/A_tam.html',
- 'https://stat.dinamalar.com/360view/kanchi/kanchi_tamil/A_tam.html'
-];
 let current=0,activePlan=[];
+
+function fill(v){document.getElementById('prompt').value=v}
+
+function rankTemples(request){
+ const q=request.toLowerCase();
+ const rules=[
+  {terms:['child','children','baby','pregnant','fertility','conceive','offspring'], scores:{1:30,2:20}},
+  {terms:['peace','stress','calm','mental','anxiety','relax'], scores:{2:25,4:20}},
+  {terms:['career','job','business','success','wealth','money'], scores:{0:25,2:15}},
+  {terms:['health','healing','wellness'], scores:{2:20,1:15}},
+  {terms:['shiva','sivan','mahadev'], scores:{1:50,4:30}},
+  {terms:['vishnu','perumal','vaishnav'], scores:{0:50}},
+  {terms:['murugan','karthikeya','subramanya'], scores:{3:50}},
+  {terms:['devi','amman','shakti','goddess'], scores:{2:50}},
+  {terms:['architecture','history','heritage','sculpture','art'], scores:{4:35,1:25,0:20}},
+  {terms:['parents','elderly','senior','less walking','easy'], scores:{2:30,3:25,4:25}}
+ ];
+ let ranked=temples.map((t,i)=>({t,i,score:45}));
+ rules.forEach(rule=>{if(rule.terms.some(term=>q.includes(term)))Object.entries(rule.scores).forEach(([i,s])=>ranked.find(x=>x.i===Number(i)).score+=s)});
+ if(q.includes('one day')||q.includes('1 day')) ranked.forEach(x=>x.score+=10);
+ return ranked.sort((a,b)=>b.score-a.score);
+}
+
+function buildPlan(){
+ const request=document.getElementById('prompt').value.trim();
+ if(!request){document.getElementById('prompt').focus();return}
+ const ranked=rankTemples(request);
+ activePlan=ranked.slice(0,Math.min(4,ranked.length));
+ const location=/kanchi|kanchipuram/i.test(request)?'Kanchipuram':'Temple discovery';
+ document.getElementById('planTitle').textContent='Your personalized '+location+' pilgrimage';
+ document.getElementById('planDesc').textContent='Based on your request: “'+request+'”';
+ document.getElementById('intentScore').textContent=Math.min(98,82+activePlan[0].score-45)+'%';
+ document.getElementById('templeCount').textContent=activePlan.length;
+ document.getElementById('plans').innerHTML=activePlan.map((x,i)=>'<div class="plan"><div class="num">'+(i+1)+'</div><div class="meta"><div class="tag">'+x.t.deity.toUpperCase()+' · '+x.t.walk+' walking · MATCH '+Math.min(99,x.score)+'%</div><div class="title">'+x.t.name+'</div><div class="muted small">'+x.t.why+'</div><div style="margin-top:8px;color:#aaa;font-size:12px">Why it matches: '+matchReason(x.t,x.i,request)+'</div><div style="margin-top:10px"><button class="btn ghost" onclick="openTemple('+x.i+')">Enter virtual tour</button></div></div></div>').join('');
+ current=activePlan[0].i;openTemple(current);document.getElementById('results').classList.add('show');setTimeout(()=>document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+function matchReason(t,i,q){
+ const x=q.toLowerCase();
+ if((x.includes('child')||x.includes('fertility')||x.includes('conceive'))&&i===1)return 'associated with a traditional child-blessing belief';
+ if((x.includes('shiva')||x.includes('sivan'))&&i===1)return 'dedicated to Shiva and a Pancha Bhoota Sthalam';
+ if((x.includes('vishnu')||x.includes('perumal'))&&i===0)return 'dedicated to Vishnu and one of the 108 Divya Desams';
+ if((x.includes('murugan'))&&i===3)return 'dedicated to Lord Murugan';
+ if((x.includes('architecture')||x.includes('heritage'))&&i===4)return 'strong match for historic Pallava architecture';
+ if(x.includes('parent')||x.includes('elder')||x.includes('less walking'))return 'prioritized for easier movement';
+ return 'strong overall match for your stated intent';
+}
 
 function fill(v){document.getElementById('prompt').value=v}
 
