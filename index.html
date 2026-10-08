@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yatra — AI Virtual Pilgrimage</title>
+  <style>
+    :root{--bg:#0b0b0d;--panel:#151519;--muted:#a5a5ad;--text:#f7f5ef;--gold:#d6a85a;--line:#2a2a30;--green:#98d9a6}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0%,#2a2115 0,#0b0b0d 42%),#0b0b0d;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+    .app{min-height:100vh}.nav{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 42px;border-bottom:1px solid var(--line);backdrop-filter:blur(10px);position:sticky;top:0;z-index:10;background:#0b0b0dd9}
+    .brand{font-size:24px;font-weight:800;letter-spacing:.5px}.brand span{color:var(--gold)}.nav .mode{font-size:13px;color:var(--muted)}
+    .hero{max-width:1180px;margin:0 auto;padding:70px 28px 40px}.eyebrow{color:var(--gold);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:12px}.hero h1{font-size:clamp(42px,7vw,82px);line-height:.95;margin:18px 0 18px;max-width:900px}.hero p{font-size:18px;color:var(--muted);max-width:760px;line-height:1.65}
+    .inputWrap{margin-top:36px;background:linear-gradient(135deg,#19181d,#101014);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 30px 80px #0007}.prompt{width:100%;min-height:110px;background:transparent;border:0;outline:none;color:var(--text);font-size:20px;resize:vertical}.prompt::placeholder{color:#6f6f78}
+    .actions{display:flex;gap:12px;align-items:center;margin-top:14px;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:13px 19px;font-weight:750;cursor:pointer}.primary{background:var(--gold);color:#17120b}.ghost{background:#222229;color:#f4f1e9;border:1px solid #34343b}.chip{padding:9px 13px;background:#17171c;border:1px solid #2b2b32;border-radius:999px;color:#c9c6bf;cursor:pointer;font-size:13px}
+    .content{max-width:1180px;margin:0 auto;padding:10px 28px 80px;display:none}.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:22px}.card{background:linear-gradient(180deg,#17171b,#111115);border:1px solid var(--line);border-radius:22px;padding:22px;overflow:hidden}.card h2,.card h3{margin-top:0}.muted{color:var(--muted)}
+    .plan{display:flex;gap:18px;align-items:flex-start;padding:18px 0;border-bottom:1px solid var(--line)}.plan:last-child{border-bottom:0}.num{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#24242a;color:var(--gold);font-weight:800}.plan .meta{flex:1}.tag{font-size:12px;color:var(--green)}.plan .title{font-size:21px;font-weight:750;margin:3px 0 6px}.small{font-size:13px}
+    .tour{min-height:520px;border-radius:18px;background:linear-gradient(135deg,#201e1b,#0c0c0e 55%,#251c11);position:relative;overflow:hidden;display:flex;align-items:flex-end}.tour:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 34%,#d6a85a55 0 7%,transparent 8%),linear-gradient(160deg,transparent 38%,#0008 100%)}.tourCopy{position:relative;padding:26px;max-width:650px}.hotspot{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 8px #d6a85a22;cursor:pointer}.h1{left:30%;top:33%}.h2{left:57%;top:42%}.h3{left:76%;top:28%}
+    .chat{background:#101015;border:1px solid var(--line);border-radius:16px;padding:16px}.chatRow{display:flex;gap:10px;margin:10px 0}.bubble{padding:11px 13px;border-radius:14px;line-height:1.45}.ai{background:#1d1d23}.you{background:#2c261a;margin-left:auto}.chatInput{display:flex;gap:8px;margin-top:12px}.chatInput input{flex:1;background:#17171c;border:1px solid #2b2b32;border-radius:12px;padding:12px;color:white}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.stat{padding:14px;border:1px solid var(--line);border-radius:14px;background:#111116}.stat b{display:block;font-size:18px}.stat span{font-size:12px;color:var(--muted)}
+    .footerNote{margin-top:20px;font-size:12px;color:#74747d}.show{display:block}
+    @media(max-width:800px){.nav{padding:0 18px}.hero,.content{padding-left:18px;padding-right:18px}.grid{grid-template-columns:1fr}.hero h1{font-size:52px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="nav"><div class="brand">yatra<span>•</span></div><div class="mode">AI-powered virtual pilgrimage</div></header>
+  <section class="hero">
+    <div class="eyebrow">Start with your reason</div>
+    <h1>Tell us what you need.<br/>We’ll find the temple.</h1>
+    <p>Describe your trip in natural language. Yatra turns your intent into a temple plan, then lets you virtually experience each stop with a contextual AI guide.</p>
+    <div class="inputWrap">
+      <textarea id="prompt" class="prompt" placeholder="e.g. I have one day in Kanchipuram. I want the important temples and not too much walking."></textarea>
+      <div class="actions">
+        <button class="btn primary" onclick="buildPlan()">Create my pilgrimage</button>
+        <button class="chip" onclick="fill('I want beautiful temple architecture in Kanchipuram')">Architecture</button>
+        <button class="chip" onclick="fill('I am visiting with my parents and want less walking')">With parents</button>
+        <button class="chip" onclick="fill('I want important Shiva temples near Chennai')">Shiva temples</button>
+      </div>
+    </div>
+  </section>
+
+  <main id="results" class="content">
+    <div class="grid">
+      <section class="card">
+        <div class="eyebrow">Your plan</div>
+        <h2 id="planTitle">1-day Kanchipuram temple journey</h2>
+        <p id="planDesc" class="muted">Optimized for importance, your purpose and easy movement.</p>
+        <div id="plans"></div>
+      </section>
+
+      <aside class="card">
+        <div class="eyebrow">Why these temples?</div>
+        <h3>Intent → recommendation</h3>
+        <div class="stats">
+          <div class="stat"><b id="intentScore">92%</b><span>intent match</span></div>
+          <div class="stat"><b id="templeCount">3</b><span>recommended stops</span></div>
+          <div class="stat"><b>1 day</b><span>suggested duration</span></div>
+        </div>
+        <p class="footerNote">The prototype uses explainable signals such as deity, significance, architecture, walking effort and prior visits.</p>
+      </aside>
+    </div>
+
+    <section class="card" style="margin-top:22px">
+      <div style="display:flex;justify-content:space-between;gap:18px;align-items:end;flex-wrap:wrap">
+        <div><div class="eyebrow">Virtual experience</div><h2 id="tourTitle">Sri Varadaraja Perumal Temple</h2><p id="tourSub" class="muted">Explore the temple virtually, then ask the AI guide about what you are seeing.</p></div>
+        <button class="btn primary" onclick="nextStop()">Next stop →</button>
+      </div>
+      <div class="tour" id="tour">
+        <div class="hotspot h1" title="100-pillar hall" onclick="askAbout('the 100-pillar hall')"></div>
+        <div class="hotspot h2" title="gopuram" onclick="askAbout('the gopuram')"></div>
+        <div class="hotspot h3" title="temple tank" onclick="askAbout('the temple tank')"></div>
+        <div class="tourCopy">
+          <div class="tag">LIVE VIRTUAL MODE</div>
+          <h2 id="sceneTitle">Enter the temple</h2>
+          <p id="sceneDesc">Choose a hotspot, ask a question, or move to the next stop. In production, this surface connects to an authorized 360° asset for this temple.</p>
+          <button class="btn ghost" onclick="askAbout('what I am looking at right now')">Ask the AI guide</button>
+        </div>
+      </div>
+      <div class="chat" style="margin-top:18px">
+        <div class="chatRow"><div class="bubble ai" id="aiMsg">I’m your temple guide. Ask me about the architecture, significance, route, rituals or anything you see.</div></div>
+        <div class="chatInput"><input id="q" placeholder="What am I looking at?" onkeydown="if(event.key==='Enter') askAbout(this.value)"/><button class="btn primary" onclick="askAbout(document.getElementById('q').value)">Ask</button></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+const temples=[
+  {name:'Sri Varadaraja Perumal Temple', deity:'Vishnu', why:'Major heritage temple with iconic gopurams, mandapams and sacred spaces.', walk:'Moderate', next:'Ekambareswarar Temple', guide:'You are exploring Varadaraja Perumal Temple. The 100-pillar hall and other mandapams are especially important architectural points to explore.'},
+  {name:'Ekambareswarar Temple', deity:'Shiva', why:'One of Kanchipuram’s principal Shiva temples and a Pancha Bhoota Sthalam associated with Earth.', walk:'Moderate', next:'Kamakshi Amman Temple', guide:'You are now at Ekambareswarar. This stop is especially relevant for visitors interested in Shiva traditions, temple scale and historic architecture.'},
+  {name:'Kamakshi Amman Temple', deity:'Devi', why:'Central Shakti shrine in Kanchipuram and a strong final stop for a balanced pilgrimage.', walk:'Easy', next:'Done', guide:'This is Kamakshi Amman Temple. Your route ends here, giving you a balanced Shiva–Vishnu–Devi journey through Kanchipuram.'}
+];
+let current=0;
+function fill(v){document.getElementById('prompt').value=v}
+function buildPlan(){
+  const v=document.getElementById('prompt').value.trim();
+  document.getElementById('results').classList.add('show');
+  document.getElementById('plans').innerHTML=temples.map((t,i)=>'<div class="plan"><div class="num">'+(i+1)+'</div><div class="meta"><div class="tag">'+t.deity.toUpperCase()+' · '+t.walk+' walking</div><div class="title">'+t.name+'</div><div class="muted small">'+t.why+'</div><div style="margin-top:10px"><button class="btn ghost" onclick="openTemple('+i+')">Enter virtual tour</button></div></div></div>').join('');
+  document.getElementById('planDesc').textContent=v?('Built from your request: “'+v+'”'): 'Optimized for importance, your purpose and easy movement.';
+  current=0;openTemple(0);window.scrollTo({top:document.getElementById('results').offsetTop-80,behavior:'smooth'});
+}
+function openTemple(i){
+  current=i;const t=temples[i];document.getElementById('tourTitle').textContent=t.name;document.getElementById('sceneTitle').textContent='Explore '+t.name;document.getElementById('sceneDesc').textContent=t.guide;document.getElementById('aiMsg').textContent='I’m guiding you through '+t.name+'. Ask me about what you see.';
+}
+function nextStop(){if(current<temples.length-1){openTemple(current+1)}else{document.getElementById('aiMsg').textContent='Your virtual pilgrimage is complete. You can now use the plan for your physical visit.'}}
+function askAbout(q){const t=temples[current];const text=(q||'').toLowerCase();let answer='This area is part of '+t.name+'. ';if(text.includes('gopuram'))answer+='The gopuram is one of the visual landmarks of the complex and a useful orientation point.';else if(text.includes('100')||text.includes('pillar'))answer+='The 100-pillar hall is a key architectural highlight to explore for its sculptural detailing.';else if(text.includes('tank'))answer+='The temple tank is an important sacred water space connected to the temple complex.';else answer+='I can explain its history, architecture, religious significance or help you decide where to go next.';document.getElementById('aiMsg').textContent=answer}
+</script>
+</body>
+</html>
