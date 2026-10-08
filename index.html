@@ -84,24 +84,92 @@
 </div>
 <script>
 const temples=[
-  {name:'Sri Varadaraja Perumal Temple', deity:'Vishnu', why:'Major heritage temple with iconic gopurams, mandapams and sacred spaces.', walk:'Moderate', next:'Ekambareswarar Temple', guide:'You are exploring Varadaraja Perumal Temple. The 100-pillar hall and other mandapams are especially important architectural points to explore.'},
-  {name:'Ekambareswarar Temple', deity:'Shiva', why:'One of Kanchipuram’s principal Shiva temples and a Pancha Bhoota Sthalam associated with Earth.', walk:'Moderate', next:'Kamakshi Amman Temple', guide:'You are now at Ekambareswarar. This stop is especially relevant for visitors interested in Shiva traditions, temple scale and historic architecture.'},
-  {name:'Kamakshi Amman Temple', deity:'Devi', why:'Central Shakti shrine in Kanchipuram and a strong final stop for a balanced pilgrimage.', walk:'Easy', next:'Done', guide:'This is Kamakshi Amman Temple. Your route ends here, giving you a balanced Shiva–Vishnu–Devi journey through Kanchipuram.'}
+ {name:'Sri Varadaraja Perumal Temple',deity:'Vishnu',why:'Major heritage temple with iconic gopurams, mandapams and sacred spaces.',walk:'Moderate',guide:'You are exploring Varadaraja Perumal Temple. The 100-pillar hall and mandapams are important architectural highlights.'},
+ {name:'Ekambareswarar Temple',deity:'Shiva',why:'One of Kanchipuram’s principal Shiva temples and a Pancha Bhoota Sthalam associated with Earth.',walk:'Moderate',guide:'You are at Ekambareswarar, a major Shiva temple and an important architectural stop in Kanchipuram.'},
+ {name:'Kamakshi Amman Temple',deity:'Devi',why:'A major Shakti shrine in Kanchipuram and a natural final stop for a balanced pilgrimage.',walk:'Easy',guide:'You are at Kamakshi Amman Temple, a major Devi shrine and a strong final stop.'}
 ];
-let current=0;const tourUrls=[`https://stat.dinamalar.com/360view/vardarajan_kanchi/tamil/rajagopuram_tam.html`,`https://stat.dinamalar.com/360view/ekambareshwara/ekambareshwara_tamil/A_tam.html`,`https://stat.dinamalar.com/360view/kanchi/kanchi_tamil/A_tam.html`];
+const tourUrls=[
+ 'https://stat.dinamalar.com/360view/vardarajan_kanchi/tamil/rajagopuram_tam.html',
+ 'https://stat.dinamalar.com/360view/ekambareshwara/ekambareshwara_tamil/A_tam.html',
+ 'https://stat.dinamalar.com/360view/kanchi/kanchi_tamil/A_tam.html'
+];
+let current=0,activePlan=[];
+
 function fill(v){document.getElementById('prompt').value=v}
+
+function rankTemples(request){
+ const q=request.toLowerCase();
+ let ranked=temples.map((t,i)=>({t,i,score:50}));
+ if(q.includes('shiva')||q.includes('sivan')) ranked.find(x=>x.i===1).score+=45;
+ if(q.includes('vishnu')||q.includes('perumal')) ranked.find(x=>x.i===0).score+=45;
+ if(q.includes('devi')||q.includes('amman')||q.includes('shakti')) ranked.find(x=>x.i===2).score+=45;
+ if(q.includes('architecture')||q.includes('architect')) ranked.forEach(x=>x.score+=(x.i===0?18:x.i===1?20:12));
+ if(q.includes('parent')||q.includes('elder')||q.includes('less walking')||q.includes('easy')) ranked.find(x=>x.i===2).score+=30;
+ if(q.includes('one day')||q.includes('1 day')) ranked.forEach(x=>x.score+=10);
+ return ranked.sort((a,b)=>b.score-a.score);
+}
+
 function buildPlan(){
-  const v=document.getElementById('prompt').value.trim();
-  document.getElementById('results').classList.add('show');
-  document.getElementById('plans').innerHTML=temples.map((t,i)=>'<div class="plan"><div class="num">'+(i+1)+'</div><div class="meta"><div class="tag">'+t.deity.toUpperCase()+' · '+t.walk+' walking</div><div class="title">'+t.name+'</div><div class="muted small">'+t.why+'</div><div style="margin-top:10px"><button class="btn ghost" onclick="openTemple('+i+')">Enter virtual tour</button></div></div></div>').join('');
-  document.getElementById('planDesc').textContent=v?('Built from your request: “'+v+'”'): 'Optimized for importance, your purpose and easy movement.';
-  current=0;openTemple(0);window.scrollTo({top:document.getElementById('results').offsetTop-80,behavior:'smooth'});
+ const request=document.getElementById('prompt').value.trim();
+ if(!request){
+   document.getElementById('prompt').focus();
+   document.getElementById('planDesc').textContent='Tell me what you want from the pilgrimage first — for example, “I have one day in Kanchipuram and want important temples.”';
+   return;
+ }
+ const q=request.toLowerCase();
+ const ranked=rankTemples(request);
+
+ // Always create a coherent journey: intent-first ordering, then complementary stops.
+ if(q.includes('shiva')||q.includes('sivan')) {
+   activePlan=[ranked.find(x=>x.i===1),ranked.find(x=>x.i===0),ranked.find(x=>x.i===2)].filter(Boolean);
+ } else if(q.includes('vishnu')||q.includes('perumal')) {
+   activePlan=[ranked.find(x=>x.i===0),ranked.find(x=>x.i===1),ranked.find(x=>x.i===2)].filter(Boolean);
+ } else if(q.includes('devi')||q.includes('amman')||q.includes('shakti')) {
+   activePlan=[ranked.find(x=>x.i===2),ranked.find(x=>x.i===1),ranked.find(x=>x.i===0)].filter(Boolean);
+ } else {
+   activePlan=ranked.slice(0,3);
+ }
+ activePlan=activePlan.filter((x,i,a)=>a.findIndex(y=>y.i===x.i)===i);
+
+ const location=q.includes('kanchi')||q.includes('kanchipuram')?'Kanchipuram':'Temple discovery';
+ const duration=q.includes('one day')||q.includes('1 day')?'1-day':'Flexible';
+ document.getElementById('planTitle').textContent=duration+' '+location+' pilgrimage';
+ document.getElementById('planDesc').textContent='I matched your intent to '+activePlan.length+' stops, then ordered them into a journey.';
+ document.getElementById('intentScore').textContent=Math.min(98,82+activePlan.length*5)+'%';
+ document.getElementById('templeCount').textContent=activePlan.length;
+ document.getElementById('plans').innerHTML=activePlan.map((x,i)=>'<div class="plan"><div class="num">'+(i+1)+'</div><div class="meta"><div class="tag">'+x.t.deity.toUpperCase()+' · '+x.t.walk+' walking · MATCH '+Math.min(99,x.score)+'%</div><div class="title">'+x.t.name+'</div><div class="muted small">'+x.t.why+'</div><div style="margin-top:10px"><button class="btn ghost" onclick="openTemple('+x.i+')">Enter virtual tour</button></div></div></div>').join('');
+
+ current=0;
+ openTemple(activePlan[0].i);
+ document.getElementById('results').classList.add('show');
+ setTimeout(()=>document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'}),50);
 }
+
 function openTemple(i){
-  current=i;const t=temples[i];document.getElementById('tourFrame').src=tourUrls[i];document.getElementById('tourTitle').textContent=t.name;document.getElementById('sceneTitle').textContent=t.name;document.getElementById('sceneDesc')?.textContent=t.guide;document.getElementById('aiMsg').textContent='I’m guiding you through '+t.name+'. Ask me about what you see.';
+ current=i;
+ const t=temples[i];
+ document.getElementById('tourFrame').src=tourUrls[i];
+ document.getElementById('tourTitle').textContent=t.name;
+ document.getElementById('tourSub').textContent=t.guide;
+ document.getElementById('sceneTitle').textContent=t.name;
+ document.getElementById('aiMsg').textContent='I’m guiding you through '+t.name+'. Ask me about what you see.';
 }
-function nextStop(){if(current<temples.length-1){openTemple(current+1)}else{document.getElementById('aiMsg').textContent='Your virtual pilgrimage is complete. You can now use the plan for your physical visit.'}}
-function askAbout(q){const t=temples[current];const text=(q||'').toLowerCase();let answer='This area is part of '+t.name+'. ';if(text.includes('gopuram'))answer+='The gopuram is one of the visual landmarks of the complex and a useful orientation point.';else if(text.includes('100')||text.includes('pillar'))answer+='The 100-pillar hall is a key architectural highlight to explore for its sculptural detailing.';else if(text.includes('tank'))answer+='The temple tank is an important sacred water space connected to the temple complex.';else answer+='I can explain its history, architecture, religious significance or help you decide where to go next.';document.getElementById('aiMsg').textContent=answer}
+
+function nextStop(){
+ const pos=activePlan.findIndex(x=>x.i===current);
+ if(pos>=0 && pos<activePlan.length-1) openTemple(activePlan[pos+1].i);
+ else document.getElementById('aiMsg').textContent='Your virtual pilgrimage is complete. You can now use this route for your physical visit.';
+}
+
+function askAbout(q){
+ const t=temples[current],text=(q||'').toLowerCase();
+ let answer='This area is part of '+t.name+'. ';
+ if(text.includes('gopuram')) answer+='The gopuram is one of the visual landmarks and a useful orientation point.';
+ else if(text.includes('100')||text.includes('pillar')) answer+='The 100-pillar hall is a key architectural highlight.';
+ else if(text.includes('history')) answer+='I can explain the historical significance and major architectural features of this temple.';
+ else answer+='I can explain the history, architecture, religious significance, or help you decide the next stop.';
+ document.getElementById('aiMsg').textContent=answer;
+}
 </script>
 </body>
 </html>
