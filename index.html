@@ -83,7 +83,7 @@
           <button class="chip" onclick="askAbout('What are the temple timings?')">Timings</button>
         </div>
         <div class="chatRow"><div class="bubble ai" id="aiMsg">Ask me about this temple’s history, what it is famous for, seva/puja, timings, festivals or architecture.</div></div>
-        <div class="chatInput"><input id="q" placeholder="Ask about this temple..." onkeydown="if(event.key==='Enter') askAbout(this.value)"/><button class="btn primary" onclick="askAbout(document.getElementById('q').value)">Ask</button></div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><select id="language" style="background:#17171c;border:1px solid #34343b;color:#eee;border-radius:10px;padding:9px"><option>English</option><option>Tamil</option><option>Telugu</option><option>Hindi</option></select><button class="chip" onclick="speakLast()">🔊 Listen</button></div><div class="chatInput"><input id="q" placeholder="Ask anything about this temple..." onkeydown="if(event.key==='Enter') askAbout(this.value)"/><button class="btn primary" onclick="askAbout(document.getElementById('q').value)">Ask</button></div>
       </div>
     </section>
   </main>
@@ -217,7 +217,7 @@ function nextStop(){
  else document.getElementById('aiMsg').textContent='Your virtual pilgrimage is complete. You can now use this route for your physical visit.';
 }
 
-async function askAbout(q){
+let lastAnswer="";\nasync function askAbout(q){
  const question=(q||'').trim(); if(!question)return;
  const msg=document.getElementById('aiMsg');
  msg.textContent='Thinking…';
