@@ -1,6 +1,5 @@
 {
-  "name":"yatra-ai-pilgrimage",
-  "private":true,
-  "type":"module",
-  "dependencies":{"openai":"latest"}
+  "name": "yatra-ai-pilgrimage",
+  "private": true,
+  "type": "module"
 }
