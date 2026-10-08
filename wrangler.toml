@@ -1,12 +1,10 @@
-{
-  "name": "yatra-ai-pilgrimage",
-  "compatibility_date": "2026-10-08",
-  "assets": {
-    "directory": ".",
-    "binding": "ASSETS"
-  },
-  "ai": {
-    "binding": "AI"
-  },
-  "main": "./worker.js"
-}
+name = "yatra-ai-pilgrimage"
+main = "worker.js"
+compatibility_date = "2026-10-08"
+
+[assets]
+directory = "."
+binding = "ASSETS"
+
+[ai]
+binding = "AI"
