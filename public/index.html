@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yatra — AI Virtual Pilgrimage</title>
+  <style>
+    :root{--bg:#0b0b0d;--panel:#151519;--muted:#a5a5ad;--text:#f7f5ef;--gold:#d6a85a;--line:#2a2a30;--green:#98d9a6}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0%,#2a2115 0,#0b0b0d 42%),#0b0b0d;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+    .app{min-height:100vh}.nav{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 42px;border-bottom:1px solid var(--line);backdrop-filter:blur(10px);position:sticky;top:0;z-index:10;background:#0b0b0dd9}
+    .brand{font-size:24px;font-weight:800;letter-spacing:.5px}.brand span{color:var(--gold)}.nav .mode{font-size:13px;color:var(--muted)}
+    .hero{max-width:1180px;margin:0 auto;padding:70px 28px 40px}.eyebrow{color:var(--gold);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:12px}.hero h1{font-size:clamp(42px,7vw,82px);line-height:.95;margin:18px 0 18px;max-width:900px}.hero p{font-size:18px;color:var(--muted);max-width:760px;line-height:1.65}
+    .inputWrap{margin-top:36px;background:linear-gradient(135deg,#19181d,#101014);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 30px 80px #0007}.prompt{width:100%;min-height:110px;background:transparent;border:0;outline:none;color:var(--text);font-size:20px;resize:vertical}.prompt::placeholder{color:#6f6f78}
+    .actions{display:flex;gap:12px;align-items:center;margin-top:14px;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:13px 19px;font-weight:750;cursor:pointer}.primary{background:var(--gold);color:#17120b}.ghost{background:#222229;color:#f4f1e9;border:1px solid #34343b}.chip{padding:9px 13px;background:#17171c;border:1px solid #2b2b32;border-radius:999px;color:#c9c6bf;cursor:pointer;font-size:13px}
+    .content{max-width:1180px;margin:0 auto;padding:10px 28px 80px;display:none}.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:22px}.card{background:linear-gradient(180deg,#17171b,#111115);border:1px solid var(--line);border-radius:22px;padding:22px;overflow:hidden}.card h2,.card h3{margin-top:0}.muted{color:var(--muted)}
+    .plan{display:flex;gap:18px;align-items:flex-start;padding:18px 0;border-bottom:1px solid var(--line)}.plan:last-child{border-bottom:0}.num{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#24242a;color:var(--gold);font-weight:800}.plan .meta{flex:1}.tag{font-size:12px;color:var(--green)}.plan .title{font-size:21px;font-weight:750;margin:3px 0 6px}.small{font-size:13px}
+    .tour{min-height:520px;border-radius:18px;background:linear-gradient(135deg,#201e1b,#0c0c0e 55%,#251c11);position:relative;overflow:hidden;display:flex;align-items:flex-end}.tour:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 34%,#d6a85a55 0 7%,transparent 8%),linear-gradient(160deg,transparent 38%,#0008 100%)}.tourCopy{position:relative;padding:26px;max-width:650px}.hotspot{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 8px #d6a85a22;cursor:pointer}.h1{left:30%;top:33%}.h2{left:57%;top:42%}.h3{left:76%;top:28%}
+    .chat{background:#101015;border:1px solid var(--line);border-radius:16px;padding:16px}.chatRow{display:flex;gap:10px;margin:10px 0}.bubble{padding:11px 13px;border-radius:14px;line-height:1.45}.ai{background:#1d1d23}.you{background:#2c261a;margin-left:auto}.chatInput{display:flex;gap:8px;margin-top:12px}.chatInput input{flex:1;background:#17171c;border:1px solid #2b2b32;border-radius:12px;padding:12px;color:white}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.stat{padding:14px;border:1px solid var(--line);border-radius:14px;background:#111116}.stat b{display:block;font-size:18px}.stat span{font-size:12px;color:var(--muted)}
+    .footerNote{margin-top:20px;font-size:12px;color:#74747d}.show{display:block}
+    @media(max-width:800px){.nav{padding:0 18px}.hero,.content{padding-left:18px;padding-right:18px}.grid{grid-template-columns:1fr}.hero h1{font-size:52px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="nav"><div class="brand">yatra<span>•</span></div><div class="mode">AI-powered virtual pilgrimage</div></header>
+  <section class="hero">
+    <div class="eyebrow">Start with your reason</div>
+    <h1>Tell us what you need.<br/>We’ll find the temple.</h1>
+    <p>Describe your trip in natural language. Yatra turns your intent into a temple plan, then lets you virtually experience each stop with a contextual AI guide.</p>
+    <div class="inputWrap">
+      <textarea id="prompt" class="prompt" placeholder="e.g. I have one day in Kanchipuram. I want the important temples and not too much walking."></textarea>
+      <div class="actions">
+        <button class="btn primary" onclick="buildPlan()">Create my pilgrimage</button>
+        <button class="chip" onclick="fill('I want beautiful temple architecture in Kanchipuram')">Architecture</button>
+        <button class="chip" onclick="fill('I am visiting with my parents and want less walking')">With parents</button>
+        <button class="chip" onclick="fill('I want important Shiva temples near Chennai')">Shiva temples</button>
+      </div>
+    </div>
+  </section>
+
+  <main id="results" class="content">
+    <div class="grid">
+      <section class="card">
+        <div class="eyebrow">Your plan</div>
+        <h2 id="planTitle">1-day Kanchipuram temple journey</h2>
+        <p id="planDesc" class="muted">Optimized for importance, your purpose and easy movement.</p>
+        <div id="plans"></div>
+      </section>
+
+      <aside class="card">
+        <div class="eyebrow">Why these temples?</div>
+        <h3>Intent → recommendation</h3>
+        <div class="stats">
+          <div class="stat"><b id="intentScore">92%</b><span>intent match</span></div>
+          <div class="stat"><b id="templeCount">3</b><span>recommended stops</span></div>
+          <div class="stat"><b>1 day</b><span>suggested duration</span></div>
+        </div>
+        <p class="footerNote">The prototype uses explainable signals such as deity, significance, architecture, walking effort and prior visits.</p>
+      </aside>
+    </div>
+
+    <section class="card" style="margin-top:22px">
+      <div style="display:flex;justify-content:space-between;gap:18px;align-items:end;flex-wrap:wrap">
+        <div><div class="eyebrow">Virtual experience</div><h2 id="tourTitle">Sri Varadaraja Perumal Temple</h2><p id="tourSub" class="muted">Explore the temple virtually, then ask the AI guide about what you are seeing.</p></div>
+        <button class="btn primary" onclick="nextStop()">Next stop →</button>
+      </div>
+      <div class="tour" id="tour" style="min-height:560px;display:block;background:#08090b">
+        <iframe id="tourFrame" title="360 degree temple virtual tour" src="https://stat.dinamalar.com/360view/vardarajan_kanchi/tamil/rajagopuram_tam.html" style="display:none" allow="fullscreen; gyroscope; accelerometer; autoplay; xr-spatial-tracking"></iframe>
+        <div style="position:absolute;left:18px;top:18px;z-index:3;background:#0b0b0dcc;border:1px solid #39352d;border-radius:12px;padding:10px 13px;backdrop-filter:blur(8px)">
+          <div class="tag">LIVE 360° EXPERIENCE</div>
+          <div id="sceneTitle" style="font-weight:800;margin-top:3px">Varadaraja Perumal · Rajagopuram</div>
+        </div>
+        <div style="position:absolute;right:18px;bottom:18px;z-index:3;background:#0b0b0dcc;border:1px solid #39352d;border-radius:12px;padding:10px 13px;color:#ddd;font-size:12px;max-width:310px">
+          Drag to look around. Use the AI guide below to understand what you are viewing.
+        </div>
+      </div>
+      <div class="chat" style="margin-top:18px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <button class="chip" onclick="askAbout('Tell me the history of this temple')">History</button>
+          <button class="chip" onclick="askAbout('What is this temple famous for?')">Famous for</button>
+          <button class="chip" onclick="askAbout('What seva and puja are available?')">Seva / Puja</button>
+          <button class="chip" onclick="askAbout('What are the temple timings?')">Timings</button>
+        </div>
+        <div class="chatRow"><div class="bubble ai" id="aiMsg">Ask me about this temple’s history, what it is famous for, seva/puja, timings, festivals or architecture.</div></div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><select id="language" style="background:#17171c;border:1px solid #34343b;color:#eee;border-radius:10px;padding:9px"><option>English</option><option>Tamil</option><option>Telugu</option><option>Hindi</option></select><button class="chip" onclick="speakLast()">🔊 Listen</button></div><div class="chatInput"><input id="q" placeholder="Ask anything about this temple..." onkeydown="if(event.key==='Enter') askAbout(this.value)"/><button class="btn primary" onclick="askAbout(document.getElementById('q').value)">Ask</button></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+const temples=[
+ {name:'Sri Varadaraja Perumal Temple',deity:'Vishnu',why:'Major Vishnu shrine and one of the 108 Divya Desams.',walk:'Moderate',guide:'Varadaraja Perumal is one of Kanchipuram’s major Vishnu temples.'},
+ {name:'Ekambareswarar Temple',deity:'Shiva',why:'Pancha Bhoota Sthalam representing Earth, with major Shiva worship traditions.',walk:'Moderate',guide:'Ekambareswarar is Kanchipuram’s major Earth-element Shiva shrine.'},
+ {name:'Kamakshi Amman Temple',deity:'Devi',why:'Major Shakti shrine and the principal goddess temple of Kanchipuram.',walk:'Easy',guide:'Kamakshi Amman is a central Shakti shrine in Kanchipuram.'},
+ {name:'Kumarakottam Murugan Temple',deity:'Murugan',why:'Important Murugan shrine located between Ekambareswarar and Kamakshi temples.',walk:'Easy',guide:'Kumarakottam is a major Murugan temple associated with the Kanda Puranam tradition.'},
+ {name:'Kailasanathar Temple',deity:'Shiva',why:'Historic Pallava-era Shiva temple known for its early Dravidian architecture.',walk:'Easy',guide:'Kailasanathar is one of Kanchipuram’s most important early architectural monuments.'}
+];
+const templeInfo={
+ 0:{history:'Varadaraja Perumal Temple is one of the 108 Divya Desams dedicated to Vishnu. The Kancheepuram district describes its large complex, pillared halls and Vijayanagara contributions.',famous:'It is famous for its 100-pillared hall, architectural carvings, Brahmotsavam and Athi Varadar tradition.',seva:'Daily worship and temple services are offered, with specific seva availability varying by day. Confirm current paid seva details with the temple.',timings:'The Kancheepuram district currently lists 6:00 AM–12:30 PM and 3:30 PM–8:30 PM.'},
+ 1:{history:'Ekambareswarar is one of the five Pancha Bhoota Sthalams of Shiva and represents Earth. Pallava, Chola and Vijayanagara rulers contributed to the complex.',famous:'It is famous for the sacred mango tree, huge Rajagopuram, thousand-pillared hall and 1008 Shiva lingams.',seva:'Multiple daily worship services are performed. Exact seva tickets and availability can vary and should be confirmed with the temple.',timings:'The Kancheepuram district lists 6:00 AM–12:30 PM and 4:00 PM–8:30 PM.'},
+ 2:{history:'Kamakshi Amman is a major Shakti shrine in Kanchipuram and the city’s principal goddess temple.',famous:'It is known for Goddess Kamakshi, the golden vimanam and its important Shakti tradition.',seva:'Daily worship includes several puja periods; exact seva offerings and booking rules should be confirmed with the temple.',timings:'Temple timings can vary by worship schedule; visitors should confirm the current schedule before travelling.'},
+ 3:{history:'Kumarakottam is an important Murugan temple situated between the Ekambareswarar and Kamakshi temples.',famous:'It is associated with Kachiappa Sivachariar and the Kanda Puranam tradition.',seva:'Multiple daily worship services are traditionally offered; confirm current seva availability at the temple.',timings:'Published tourism information lists morning and evening worship windows; confirm the day’s schedule before visiting.'},
+ 4:{history:'Kailasanathar is an early Pallava-era Shiva temple and one of Kanchipuram’s key architectural monuments.',famous:'It is particularly famous for its early Dravidian architecture, sandstone sculptures and Shiva imagery.',seva:'This is primarily a heritage and worship site; confirm current puja and seva arrangements locally.',timings:'Confirm current opening hours locally before visiting.'}
+};
+let current=0,activePlan=[];
+
+function fill(v){document.getElementById('prompt').value=v}
+
+function rankTemples(request){
+ const q=request.toLowerCase();
+ const rules=[
+  {terms:['child','children','baby','pregnant','fertility','conceive','offspring'], scores:{1:30,2:20}},
+  {terms:['peace','stress','calm','mental','anxiety','relax'], scores:{2:25,4:20}},
+  {terms:['career','job','business','success','wealth','money'], scores:{0:25,2:15}},
+  {terms:['health','healing','wellness'], scores:{2:20,1:15}},
+  {terms:['shiva','sivan','mahadev'], scores:{1:50,4:30}},
+  {terms:['vishnu','perumal','vaishnav'], scores:{0:50}},
+  {terms:['murugan','karthikeya','subramanya'], scores:{3:50}},
+  {terms:['devi','amman','shakti','goddess'], scores:{2:50}},
+  {terms:['architecture','history','heritage','sculpture','art'], scores:{4:35,1:25,0:20}},
+  {terms:['parents','elderly','senior','less walking','easy'], scores:{2:30,3:25,4:25}}
+ ];
+ let ranked=temples.map((t,i)=>({t,i,score:45}));
+ rules.forEach(rule=>{if(rule.terms.some(term=>q.includes(term)))Object.entries(rule.scores).forEach(([i,s])=>ranked.find(x=>x.i===Number(i)).score+=s)});
+ if(q.includes('one day')||q.includes('1 day')) ranked.forEach(x=>x.score+=10);
+ return ranked.sort((a,b)=>b.score-a.score);
+}
+
+function buildPlan(){
+ const request=document.getElementById('prompt').value.trim();
+ if(!request){document.getElementById('prompt').focus();return}
+ const ranked=rankTemples(request);
+ activePlan=ranked.slice(0,Math.min(4,ranked.length));
+ const location=/kanchi|kanchipuram/i.test(request)?'Kanchipuram':'Temple discovery';
+ document.getElementById('planTitle').textContent='Your personalized '+location+' pilgrimage';
+ document.getElementById('planDesc').textContent='Based on your request: “'+request+'”';
+ document.getElementById('intentScore').textContent=Math.min(98,82+activePlan[0].score-45)+'%';
+ document.getElementById('templeCount').textContent=activePlan.length;
+ document.getElementById('plans').innerHTML=activePlan.map((x,i)=>'<div class="plan"><div class="num">'+(i+1)+'</div><div class="meta"><div class="tag">'+x.t.deity.toUpperCase()+' · '+x.t.walk+' walking · MATCH '+Math.min(99,x.score)+'%</div><div class="title">'+x.t.name+'</div><div class="muted small">'+x.t.why+'</div><div style="margin-top:8px;color:#aaa;font-size:12px">Why it matches: '+matchReason(x.t,x.i,request)+'</div><div style="margin-top:10px"><button class="btn ghost" onclick="openTemple('+x.i+')">Enter virtual tour</button></div></div></div>').join('');
+ current=activePlan[0].i;openTemple(current);document.getElementById('results').classList.add('show');setTimeout(()=>document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+function matchReason(t,i,q){
+ const x=q.toLowerCase();
+ if((x.includes('child')||x.includes('fertility')||x.includes('conceive'))&&i===1)return 'associated with a traditional child-blessing belief';
+ if((x.includes('shiva')||x.includes('sivan'))&&i===1)return 'dedicated to Shiva and a Pancha Bhoota Sthalam';
+ if((x.includes('vishnu')||x.includes('perumal'))&&i===0)return 'dedicated to Vishnu and one of the 108 Divya Desams';
+ if((x.includes('murugan'))&&i===3)return 'dedicated to Lord Murugan';
+ if((x.includes('architecture')||x.includes('heritage'))&&i===4)return 'strong match for historic Pallava architecture';
+ if(x.includes('parent')||x.includes('elder')||x.includes('less walking'))return 'prioritized for easier movement';
+ return 'strong overall match for your stated intent';
+}
+
+function fill(v){document.getElementById('prompt').value=v}
+
+function rankTemples(request){
+ const q=request.toLowerCase();
+ let ranked=temples.map((t,i)=>({t,i,score:50}));
+ if(q.includes('shiva')||q.includes('sivan')) ranked.find(x=>x.i===1).score+=45;
+ if(q.includes('vishnu')||q.includes('perumal')) ranked.find(x=>x.i===0).score+=45;
+ if(q.includes('devi')||q.includes('amman')||q.includes('shakti')) ranked.find(x=>x.i===2).score+=45;
+ if(q.includes('architecture')||q.includes('architect')) ranked.forEach(x=>x.score+=(x.i===0?18:x.i===1?20:12));
+ if(q.includes('parent')||q.includes('elder')||q.includes('less walking')||q.includes('easy')) ranked.find(x=>x.i===2).score+=30;
+ if(q.includes('one day')||q.includes('1 day')) ranked.forEach(x=>x.score+=10);
+ return ranked.sort((a,b)=>b.score-a.score);
+}
+
+function buildPlan(){
+ const request=document.getElementById('prompt').value.trim();
+ if(!request){
+   document.getElementById('prompt').focus();
+   document.getElementById('planDesc').textContent='Tell me what you want from the pilgrimage first — for example, “I have one day in Kanchipuram and want important temples.”';
+   return;
+ }
+ const q=request.toLowerCase();
+ const ranked=rankTemples(request);
+
+ // Always create a coherent journey: intent-first ordering, then complementary stops.
+ if(q.includes('shiva')||q.includes('sivan')) {
+   activePlan=[ranked.find(x=>x.i===1),ranked.find(x=>x.i===0),ranked.find(x=>x.i===2)].filter(Boolean);
+ } else if(q.includes('vishnu')||q.includes('perumal')) {
+   activePlan=[ranked.find(x=>x.i===0),ranked.find(x=>x.i===1),ranked.find(x=>x.i===2)].filter(Boolean);
+ } else if(q.includes('devi')||q.includes('amman')||q.includes('shakti')) {
+   activePlan=[ranked.find(x=>x.i===2),ranked.find(x=>x.i===1),ranked.find(x=>x.i===0)].filter(Boolean);
+ } else {
+   activePlan=ranked.slice(0,3);
+ }
+ activePlan=activePlan.filter((x,i,a)=>a.findIndex(y=>y.i===x.i)===i);
+
+ const location=q.includes('kanchi')||q.includes('kanchipuram')?'Kanchipuram':'Temple discovery';
+ const duration=q.includes('one day')||q.includes('1 day')?'1-day':'Flexible';
+ document.getElementById('planTitle').textContent=duration+' '+location+' pilgrimage';
+ document.getElementById('planDesc').textContent='I matched your intent to '+activePlan.length+' stops, then ordered them into a journey.';
+ document.getElementById('intentScore').textContent=Math.min(98,82+activePlan.length*5)+'%';
+ document.getElementById('templeCount').textContent=activePlan.length;
+ document.getElementById('plans').innerHTML=activePlan.map((x,i)=>'<div class="plan"><div class="num">'+(i+1)+'</div><div class="meta"><div class="tag">'+x.t.deity.toUpperCase()+' · '+x.t.walk+' walking · MATCH '+Math.min(99,x.score)+'%</div><div class="title">'+x.t.name+'</div><div class="muted small">'+x.t.why+'</div><div style="margin-top:10px"><button class="btn ghost" onclick="openTemple('+x.i+')">Enter virtual tour</button></div></div></div>').join('');
+
+ current=0;
+ openTemple(activePlan[0].i);
+ document.getElementById('results').classList.add('show');
+ setTimeout(()=>document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+
+function openTemple(i){
+ current=i;
+ const t=temples[i];
+ document.getElementById('tourFrame').src='about:blank';
+ document.getElementById('tourTitle').textContent=t.name;
+ document.getElementById('tourSub').textContent=t.guide;
+ document.getElementById('sceneTitle').textContent=t.name;
+ document.getElementById('aiMsg').textContent='I’m guiding you through '+t.name+'. Ask me about what you see.';
+}
+
+function nextStop(){
+ const pos=activePlan.findIndex(x=>x.i===current);
+ if(pos>=0 && pos<activePlan.length-1) openTemple(activePlan[pos+1].i);
+ else document.getElementById('aiMsg').textContent='Your virtual pilgrimage is complete. You can now use this route for your physical visit.';
+}
+
+let lastAnswer="";\nasync function askAbout(q){
+ const question=(q||'').trim(); if(!question)return;
+ const msg=document.getElementById('aiMsg');
+ msg.textContent='Thinking…';
+ try{
+   const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question,temple:temples[current],language:document.getElementById('language').value})});
+   if(!res.ok)throw new Error('api');
+   const data=await res.json();
+   msg.textContent=data.answer||localAnswer(question);
+ }catch(e){ msg.textContent=localAnswer(question); }
+}
+function localAnswer(q){
+ const x=q.toLowerCase(),info=templeInfo[current];
+ if(/history|old|built|when/.test(x))return info.history;
+ if(/famous|known|special/.test(x))return info.famous;
+ if(/seva|puja|pooja|worship|abhishe/.test(x))return info.seva;
+ if(/timing|open|close|time/.test(x))return info.timings;
+ return 'For '+temples[current].name+': '+info.history+' '+info.famous;
+}
+</script>
+</body>
+</html>
