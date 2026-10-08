@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "region": "Kanchipuram, Tamil Nadu",
+  "temples": [
+    {
+      "name": "Sri Varadaraja Perumal Temple",
+      "deity": "Vishnu",
+      "traditions": [
+        "108 Divya Desams",
+        "Athi Varadar",
+        "Brahmotsavam"
+      ],
+      "facts": [
+        "Large temple complex",
+        "19 vimanas",
+        "around 400 pillared halls",
+        "100-pillared mandapam",
+        "Vijayanagara architectural contributions"
+      ],
+      "timings": "6:00 AM–12:30 PM and 3:30 PM–8:30 PM",
+      "guidance": "A major Vishnu pilgrimage site. Verify same-day darshan, seva and festival schedules locally."
+    },
+    {
+      "name": "Ekambareswarar Temple",
+      "deity": "Shiva",
+      "traditions": [
+        "Pancha Bhoota Sthalam — Earth",
+        "sacred mango tree",
+        "Panguni Brahmotsavam"
+      ],
+      "facts": [
+        "Major Shiva temple",
+        "towering Rajagopuram",
+        "thousand-pillared hall",
+        "1008 Shiva lingams",
+        "Pallava, Chola and Vijayanagara contributions"
+      ],
+      "timings": "6:00 AM–12:30 PM and 4:00 PM–8:30 PM",
+      "guidance": "A major Shiva pilgrimage site. Child-blessing associations are religious traditions, not medical guarantees."
+    },
+    {
+      "name": "Kamakshi Amman Temple",
+      "deity": "Devi",
+      "traditions": [
+        "Shakti Sthalam",
+        "Kamakshi tradition"
+      ],
+      "facts": [
+        "Principal goddess temple of Kanchipuram",
+        "major Shakti shrine",
+        "central place in Kanchipuram's goddess tradition"
+      ],
+      "timings": "Published tourism information lists morning and evening worship windows; verify before travel.",
+      "guidance": "A central Shakti pilgrimage site. Verify current worship and seva schedule locally."
+    },
+    {
+      "name": "Kumarakottam Murugan Temple",
+      "deity": "Murugan",
+      "traditions": [
+        "Murugan",
+        "Kanda Puranam",
+        "Kachiappa Sivachariar"
+      ],
+      "facts": [
+        "Located between Ekambareswarar and Kamakshi",
+        "important Murugan shrine"
+      ],
+      "timings": "Published tourism information lists morning and evening worship windows; verify before travel.",
+      "guidance": "Useful as a complementary stop when planning a central Kanchipuram temple circuit."
+    },
+    {
+      "name": "Kailasanathar Temple",
+      "deity": "Shiva",
+      "traditions": [
+        "Pallava architecture",
+        "Shiva",
+        "Maha Shivratri"
+      ],
+      "facts": [
+        "Early Pallava-era structural temple",
+        "sandstone sculpture",
+        "early Dravidian architectural features"
+      ],
+      "timings": "6:30 AM–12:30 PM and 4:00 PM–7:30 PM",
+      "guidance": "Especially strong for visitors interested in heritage, architecture and early Pallava art."
+    }
+  ]
+}
